@@ -1,0 +1,93 @@
+import heapq
+
+class PuzzleState:
+    def _init_(self, board, goal, moves=0, previous=None):
+        self.board = board
+        self.goal = goal
+        self.moves = moves
+        self.previous = previous
+        self.empty = self.find_empty()
+        self.heuristic = self.calculate_heuristic()
+
+    def find_empty(self):
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] == 0:
+                    return i, j
+
+    def calculate_heuristic(self):
+        # Using Manhattan distance as heuristic
+        distance = 0
+        for i in range(3):
+            for j in range(3):
+                if self.board[i][j] != 0:
+                    x, y = divmod(self.board[i][j] - 1, 3)
+                    distance += abs(x - i) + abs(y - j)
+        return distance
+
+    def is_goal(self):
+        return self.board == self.goal
+
+    def neighbors(self):
+        neighbors = []
+        x, y = self.empty
+        directions = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
+        for nx, ny in directions:
+            if 0 <= nx < 3 and 0 <= ny < 3:
+                new_board = [row[:] for row in self.board]
+                new_board[x][y], new_board[nx][ny] = new_board[nx][ny], new_board[x][y]
+                neighbors.append(PuzzleState(new_board, self.goal, self.moves + 1, self))
+        return neighbors
+
+    def _lt_(self, other):
+        return (self.moves + self.heuristic) < (other.moves + other.heuristic)
+
+def a_star_search(start, goal):
+    open_set = []
+    heapq.heappush(open_set, start)
+    closed_set = set()
+    while open_set:
+        current = heapq.heappop(open_set)
+        if current.is_goal():
+            return current
+        closed_set.add(tuple(map(tuple, current.board)))
+        for neighbor in current.neighbors():
+            if tuple(map(tuple, neighbor.board)) in closed_set:
+                continue
+            heapq.heappush(open_set, neighbor)
+    return None
+
+def print_solution(state):
+    path = []
+    while state:
+        path.append(state.board)
+        state = state.previous
+    path.reverse()
+    for step in path:
+        for row in step:
+            print(row)
+        print()
+
+start_board = [
+    [2, 8, 3],
+    [1, 6, 4],
+    [7, 0, 5]
+]
+
+goal_board = [
+    [1, 2, 3],
+    [8, 0, 4],
+    [7, 6, 5]
+]
+
+start_state = PuzzleState(start_board, goal_board)
+goal_state = a_star_search(start_state, goal_board)
+
+if goal_state:
+    print("Solution found!")
+    print_solution(goal_state)
+else:
+    print("No solution exists!")
+
+    OUTPUT:
+    Solution moves: [(1,2), (2,2]
