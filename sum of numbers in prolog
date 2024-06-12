@@ -1,0 +1,6 @@
+sum(N,Sum):-
+    Sum  is(N+1)*N/2.
+
+    OUTPUT:
+     sum(8,Sum).
+Sum = 36.
