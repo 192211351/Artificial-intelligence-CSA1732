@@ -1,0 +1,25 @@
+symptom(flu, fever).
+symptom(flu, cough).
+symptom(flu, sore_throat).
+symptom(covid19, fever).
+symptom(covid19, cough).
+symptom(covid19, shortness_of_breath).
+symptom(cold, runny_nose).
+symptom(cold, sore_throat).
+symptom(allergy, runny_nose).
+symptom(allergy, sneezing).
+diagnose(Disease, Symptoms) :-
+    findall(Disease, (member(Symptom, Symptoms), symptom(Disease, Symptom)), Diseases),
+    list_to_set(Diseases, UniqueDiseases),
+    member(Disease, UniqueDiseases),
+    write('You may have '), write(Disease), nl,
+    fail.
+
+diagnose(_, _) :-
+    write('Sorry, I cannot diagnose your condition.'), nl.
+
+OUTPUT:
+diagnose(Disease, [runny_nose, sore_throat]).
+You may have cold
+You may have allergy
+Sorry, I cannot diagnose your condition.
