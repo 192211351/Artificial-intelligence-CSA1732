@@ -1,0 +1,8 @@
+ddob(supriya, '17062005').
+dob(sai, '11071998').
+dob(krishnapriya,'11042002').
+date_of_birth(Name,dateofbirth):-
+    dob(Name,dateofbirth).
+
+output:
+true
