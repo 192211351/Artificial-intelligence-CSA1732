@@ -1,0 +1,32 @@
+parent(john, mary).
+parent(john, tom).
+parent(mary, ann).
+parent(mary, pat).
+parent(pat, jim).
+
+ancestor(X, Y) :-
+    parent(X, Y).
+ancestor(X, Y) :-
+    parent(X, Z),
+    ancestor(Z, Y).
+query1 :- ancestor(john, jim).
+query2 :- ancestor(X, ann), write(X), nl, fail.
+query3 :- ancestor(mary, X), write(X), nl, fail.
+query4 :- ancestor(john, pat).
+
+query5 :- ancestor(john, X), write(X), nl, fail.
+query6 :- ancestor(X, tom), write(X), nl, fail.
+query7 :- parent(ann, pat).
+
+OUTPUT:-
+parent(ann, jim).
+false.
+
+ parent(john, pat).
+false.
+
+ parent(john,marry).
+false.
+
+ parent(john, mary).
+true.
